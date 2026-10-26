@@ -1,0 +1,88 @@
+LangChain Components
+===================
+
+LangChain is a framework for building applications powered by language models
+(LLMs). It provides reusable components for connecting models to prompts, data,
+tools, and application workflows.
+
+1. Models
+---------
+Models are the interfaces used to work with AI models.
+
+- Chat models accept messages and return responses. They are commonly used for
+  conversation, reasoning, and generation.
+- Embedding models convert text into numerical vectors. These vectors can be
+  compared to find semantically similar content.
+- Model providers may have different capabilities, costs, and configuration
+  options.
+
+2. Prompts
+----------
+A prompt is the input sent to a model. Chat prompts can contain messages with
+different roles, such as system, user, and assistant.
+
+- Prompt templates make prompts reusable and fill in variables dynamically.
+- Few-shot prompting includes examples to guide the model's response.
+- Clear instructions and relevant context help produce more useful outputs.
+- Prompts can be composed with models and other components in a chain.
+
+3. Chains and Runnables
+-----------------------
+A chain connects components into a workflow, for example: prompt -> model ->
+output parser.
+
+- Sequential workflows pass one step's output to the next.
+- Parallel workflows run independent steps and combine their results.
+- Conditional workflows choose a path based on an input or result.
+- In modern LangChain, the Runnable interface and LangChain Expression Language
+  (LCEL) are commonly used to compose these workflows.
+
+4. Indexing and Retrieval
+-------------------------
+Indexing makes external information searchable so an application can provide
+relevant context to a model. This is often used to build retrieval-augmented
+generation (RAG) applications.
+
+Typical steps:
+1. Document loaders read files, websites, or other data sources.
+2. Text splitters divide long documents into smaller chunks.
+3. Embedding models convert chunks into vectors.
+4. Vector stores save and search those vectors.
+5. Retrievers find relevant documents for a user's query.
+
+The retrieved information can be added to a prompt before calling the model.
+
+5. Output Parsers
+-----------------
+Output parsers turn a model's response into a useful format, such as structured
+data, a list, or JSON. They can also help describe the expected output format
+to the model. Always validate model output before relying on it.
+
+6. Memory and Conversation State
+--------------------------------
+Applications often need to keep track of earlier messages or other state.
+Conversation history can be included in later prompts so the model has context.
+
+Older LangChain versions provided memory abstractions for this purpose. In
+current applications, conversation history and state are commonly managed
+explicitly or with LangGraph. Memory does not automatically give a model
+permanent knowledge of every past interaction.
+
+7. Agents and Tools
+-------------------
+An agent uses a model to decide what action to take. It can select and call
+tools, observe their results, and continue until it can provide an answer.
+
+- A tool is a function or service the model is allowed to use, such as a
+  calculator, search system, or application API.
+- Give tools clear descriptions and validate their inputs and outputs.
+- Agents are useful for tasks that need decisions or multiple actions; a
+  straightforward chain is often simpler and more predictable.
+
+Typical application flow
+------------------------
+User input -> prompt -> model -> optional tool calls or retrieval -> output
+parser -> response
+
+Note: LangChain APIs evolve. Check the documentation for the installed version
+when following examples, especially for chains and memory.

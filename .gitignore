@@ -1,0 +1,78 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment variables and local secrets
+.env
+.env.*
+!.env.example
+!.env.template
+.streamlit/secrets.toml
+secrets/
+
+# Python packaging and test tools
+build/
+dist/
+site/
+*.egg-info/
+.eggs/
+.eggs
+pip-wheel-metadata/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Downloaded model weights and generated ML artifacts
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.gguf
+*.h5
+*.keras
+checkpoints/
+
+# Generated datasets and large local data
+data/
+datasets/
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.code-workspace
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini

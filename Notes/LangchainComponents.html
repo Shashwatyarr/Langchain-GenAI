@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A colorful, example-rich guide to LangChain components and how they fit together.">
+  <title>LangChain Components — A Visual Guide</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17233b;
+      --muted: #52627b;
+      --paper: #f5f7fc;
+      --card: #fff;
+      --line: #dce3ef;
+      --blue: #3366ee;
+      --purple: #7954d8;
+      --teal: #008f87;
+      --orange: #d97706;
+      --pink: #cc4887;
+      --green: #27834b;
+      --shadow: 0 14px 36px rgb(33 52 89 / 9%);
+    }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --ink: #e8edf8;
+      --muted: #aab7ce;
+      --paper: #0c1220;
+      --card: #151e2e;
+      --line: #2b3850;
+      --blue: #84a5ff;
+      --purple: #bea3ff;
+      --teal: #5bd6cb;
+      --orange: #ffc06d;
+      --pink: #ff92c7;
+      --green: #7fe0a2;
+      --shadow: 0 14px 36px rgb(0 0 0 / 22%);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.7 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    a { color: var(--blue); }
+    a:focus-visible { outline: 3px solid #ffb020; outline-offset: 3px; }
+    .hero {
+      padding: 64px 24px 54px;
+      color: white;
+      background:
+        radial-gradient(ellipse at 85% 15%, rgb(255 255 255 / 20%), transparent 30%),
+        linear-gradient(125deg, #1b3b8f, #6041bd 54%, #bd4389);
+    }
+    .hero-inner, main, footer { width: min(1100px, calc(100% - 36px)); margin: auto; }
+    .hero-toolbar { display: flex; justify-content: flex-end; margin-bottom: 20px; }
+    .theme-toggle {
+      padding: 8px 14px;
+      border: 1px solid rgb(255 255 255 / 55%);
+      border-radius: 99px;
+      background: rgb(255 255 255 / 12%);
+      color: white;
+      font: inherit;
+      font-size: .9rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .theme-toggle:hover { background: rgb(255 255 255 / 22%); }
+    .theme-toggle:focus-visible { outline: 3px solid #ffcf66; outline-offset: 3px; }
+    .eyebrow { font-size: .78rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; opacity: .85; }
+    h1 { max-width: 800px; margin: 8px 0 12px; font-size: clamp(2.4rem, 7vw, 4.5rem); line-height: 1.06; }
+    .hero p { max-width: 760px; margin: 0; font-size: 1.12rem; color: #f0edff; }
+    .chips { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 24px; }
+    .chip { padding: 5px 12px; border: 1px solid rgb(255 255 255 / 42%); border-radius: 99px; font-size: .85rem; }
+    main { padding: 26px 0 60px; }
+    .layout { display: grid; grid-template-columns: 245px minmax(0, 1fr); align-items: start; gap: 25px; }
+    nav, section, .callout, .component-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      box-shadow: var(--shadow);
+    }
+    nav { position: sticky; top: 16px; padding: 18px; }
+    nav strong { display: block; margin: 0 0 8px; color: var(--ink); }
+    nav a { display: block; padding: 5px 8px; border-radius: 8px; color: var(--muted); text-decoration: none; font-size: .91rem; }
+    nav a:hover { background: var(--paper); color: var(--blue); }
+    article { min-width: 0; }
+    section { margin: 0 0 22px; padding: clamp(20px, 4vw, 34px); scroll-margin-top: 20px; }
+    h2 { margin: 0 0 10px; font-size: clamp(1.55rem, 3vw, 2rem); line-height: 1.25; }
+    h3 { margin: 25px 0 7px; font-size: 1.18rem; }
+    p { margin: 9px 0 14px; }
+    .lead { color: var(--muted); font-size: 1.08rem; }
+    .label { display: inline-block; margin-bottom: 8px; font-size: .74rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .blue { color: var(--blue); } .purple { color: var(--purple); } .teal { color: var(--teal); }
+    .orange { color: var(--orange); } .pink { color: var(--pink); } .green { color: var(--green); }
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; margin: 17px 0; }
+    .component-card { padding: 16px; box-shadow: none; border-top: 4px solid var(--accent, var(--blue)); }
+    .component-card h3 { margin: 0 0 4px; color: var(--accent, var(--blue)); }
+    .component-card p { margin: 5px 0 0; color: var(--muted); font-size: .94rem; }
+    .diagram { overflow-x: auto; margin: 20px 0; padding: 17px; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); }
+    .flow { display: flex; min-width: 590px; align-items: center; justify-content: center; gap: 9px; }
+    .node { min-width: 100px; padding: 11px 13px; border: 2px solid var(--node-color, var(--blue)); border-radius: 12px; background: var(--card); color: var(--ink); text-align: center; font-weight: 750; }
+    .node small { display: block; color: var(--muted); font-size: .72rem; font-weight: 500; }
+    .arrow { color: #8492aa; font-size: 1.4rem; font-weight: 800; }
+    figcaption { margin-top: 11px; color: var(--muted); text-align: center; font-size: .86rem; }
+    .callout { margin: 18px 0; padding: 16px 18px; border-left: 5px solid var(--callout, var(--blue)); box-shadow: none; background: var(--paper); }
+    .callout strong { color: var(--callout, var(--blue)); }
+    pre { overflow-x: auto; margin: 13px 0; padding: 17px; border-radius: 12px; background: #17233b; color: #e6edff; font: .87rem/1.65 ui-monospace, "Cascadia Code", Consolas, monospace; tab-size: 4; }
+    code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; }
+    :not(pre) > code { padding: 2px 6px; border-radius: 5px; background: var(--line); color: var(--purple); font-size: .92em; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { padding: 10px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: var(--paper); }
+    li { margin: 5px 0; }
+    .step { display: flex; gap: 13px; margin: 12px 0; }
+    .step-num { flex: 0 0 30px; height: 30px; border-radius: 50%; background: var(--line); color: var(--purple); text-align: center; line-height: 30px; font-weight: 800; }
+    .step p { margin: 0; }
+    footer { padding: 0 0 36px; color: var(--muted); text-align: center; font-size: .88rem; }
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; }
+      nav { position: static; }
+      nav div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .cards { grid-template-columns: 1fr; }
+      .hero { padding-top: 44px; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-toolbar">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false">Use dark theme</button>
+      </div>
+      <div class="eyebrow">A visual, example-rich learning guide</div>
+      <h1>LangChain Components</h1>
+      <p>Think of an LLM app as a small team: prompts give direction, models do the language work, retrievers find facts, tools take actions, and parsers shape the result.</p>
+      <div class="chips" aria-label="Topics">
+        <span class="chip">Models</span><span class="chip">Prompts</span><span class="chip">Runnables</span>
+        <span class="chip">RAG</span><span class="chip">Tools &amp; agents</span><span class="chip">State</span>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div class="layout">
+      <nav aria-label="Contents">
+        <strong>Jump to a topic</strong>
+        <div>
+          <a href="#map">Big picture</a>
+          <a href="#models">1. Models</a>
+          <a href="#prompts">2. Prompts</a>
+          <a href="#runnables">3. Chains &amp; Runnables</a>
+          <a href="#retrieval">4. Retrieval &amp; RAG</a>
+          <a href="#parsers">5. Output parsers</a>
+          <a href="#state">6. Conversation state</a>
+          <a href="#tools">7. Tools &amp; agents</a>
+          <a href="#app">Putting it together</a>
+          <a href="#glossary">Glossary</a>
+        </div>
+      </nav>
+      <article>
+        <section id="map">
+          <span class="label blue">Start here</span>
+          <h2>The big picture</h2>
+          <p class="lead">LangChain is a framework for connecting language models with data, tools, and application logic. It helps you build a workflow around a model—not just send one prompt and hope.</p>
+          <figure class="diagram">
+            <div class="flow" role="img" aria-label="User input flows through a prompt, model, optional retrieval or tools, and an output parser to become a response.">
+              <div class="node" style="--node-color:#3366ee">User input<small>question or task</small></div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#7954d8">Prompt<small>instructions + context</small></div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#008f87">Model<small>generates / decides</small></div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#d97706">Retrieve / act<small>optional</small></div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#cc4887">Parse<small>shape the answer</small></div>
+            </div>
+            <figcaption>A typical application flow. Retrieval and tool calls are optional, depending on the task.</figcaption>
+          </figure>
+          <div class="callout" style="--callout:#7954d8"><strong>Simple mental model:</strong> a model is the engine; the other components provide its instructions, information, capabilities, and guardrails.</div>
+          <div class="cards">
+            <div class="component-card" style="--accent:#3366ee"><h3>Orchestration</h3><p>Connect steps, pass data between them, and handle branches or parallel work.</p></div>
+            <div class="component-card" style="--accent:#008f87"><h3>Grounding</h3><p>Bring in relevant, trusted information instead of relying only on model training.</p></div>
+            <div class="component-card" style="--accent:#d97706"><h3>Action</h3><p>Let the application call specific functions or services when appropriate.</p></div>
+            <div class="component-card" style="--accent:#cc4887"><h3>Reliability</h3><p>Validate inputs and outputs, track state, and handle errors deliberately.</p></div>
+          </div>
+        </section>
+
+        <section id="models">
+          <span class="label blue">Component 01</span>
+          <h2>Models: the language engine</h2>
+          <p>LangChain gives applications a common way to call model providers. A model interprets inputs and produces text, structured output, embeddings, or tool-call requests, depending on its capabilities.</p>
+          <div class="cards">
+            <div class="component-card" style="--accent:#3366ee"><h3>Chat models</h3><p>Take a sequence of messages (system, user, assistant) and produce a response. Use for conversation, summarization, extraction, and reasoning tasks.</p></div>
+            <div class="component-card" style="--accent:#008f87"><h3>Embedding models</h3><p>Convert text into vectors—arrays of numbers that capture semantic similarity. Commonly used to index and search documents.</p></div>
+          </div>
+          <h3>Example: ask a chat model</h3>
+          <pre><code>from langchain_openai import ChatOpenAI
+
+model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+reply = model.invoke("Explain embeddings in one sentence.")
+
+print(reply.content)</code></pre>
+          <p><code>invoke</code> is a convenient way to run a component once. The provider package, model name, credentials, and supported options depend on the model service you choose.</p>
+          <div class="callout" style="--callout:#3366ee"><strong>Temperature, simply:</strong> it can influence response variation where the provider supports it. Lower values often suit consistent tasks; it is not a guarantee of correctness.</div>
+          <h3>Choosing a model</h3>
+          <ul>
+            <li>Match capability to the task: chat, vision, tool calling, long context, or embeddings.</li>
+            <li>Compare latency, cost, quality, context limits, and provider availability.</li>
+            <li>Keep provider-specific configuration at the model boundary so the rest of the workflow can remain reusable.</li>
+          </ul>
+        </section>
+
+        <section id="prompts">
+          <span class="label purple">Component 02</span>
+          <h2>Prompts: instructions the model can use</h2>
+          <p>A prompt is the input sent to a model. In chat applications, it is often a sequence of messages with distinct roles. A prompt template keeps the reusable instructions separate from values supplied at runtime.</p>
+          <table>
+            <thead><tr><th>Message role</th><th>Typical purpose</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td><code>system</code></td><td>Set behavior, boundaries, or style</td><td>“You are a concise study coach.”</td></tr>
+              <tr><td><code>user</code></td><td>Provide the request and its data</td><td>“Explain this paragraph: {text}”</td></tr>
+              <tr><td><code>assistant</code></td><td>Represent a prior assistant turn or example</td><td>Previous answer in a conversation</td></tr>
+            </tbody>
+          </table>
+          <h3>Example: reusable prompt template</h3>
+          <pre><code>from langchain_core.prompts import ChatPromptTemplate
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a patient science tutor. Use a {style} tone."),
+    ("user", "Explain {topic} using one everyday example.")
+])
+
+messages = prompt.invoke({
+    "style": "friendly",
+    "topic": "gravity"
+})</code></pre>
+          <p>The template can be reused for different topics without rewriting the whole instruction. Inputs are values to insert; they are not automatically trustworthy instructions.</p>
+          <h3>Prompting techniques</h3>
+          <ul>
+            <li><strong>Clear task:</strong> say what the model should produce, not only what the subject is.</li>
+            <li><strong>Context:</strong> supply relevant facts, audience, and constraints.</li>
+            <li><strong>Few-shot examples:</strong> show input/output examples when the desired pattern is hard to explain.</li>
+            <li><strong>Output shape:</strong> request a format, then validate it with a parser or schema.</li>
+          </ul>
+          <div class="callout" style="--callout:#7954d8"><strong>Example instruction:</strong> “Summarize the passage in exactly three bullet points for a beginner. Use only details from the passage. If a detail is missing, say so.” This is more actionable than “Summarize this.”</div>
+        </section>
+
+        <section id="runnables">
+          <span class="label teal">Component 03</span>
+          <h2>Chains and Runnables: connect the steps</h2>
+          <p>A chain is a workflow made from components. In modern LangChain, many components implement the <code>Runnable</code> interface, which gives a consistent way to invoke, compose, batch, or stream work. LangChain Expression Language (LCEL) uses the pipe operator (<code>|</code>) to connect compatible steps.</p>
+          <figure class="diagram">
+            <div class="flow" role="img" aria-label="Prompt feeds model, whose output feeds an output parser.">
+              <div class="node" style="--node-color:#7954d8">Prompt</div><span class="arrow" aria-hidden="true">|</span>
+              <div class="node" style="--node-color:#008f87">Model</div><span class="arrow" aria-hidden="true">|</span>
+              <div class="node" style="--node-color:#cc4887">Parser</div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#3366ee">Answer</div>
+            </div>
+            <figcaption>Each step receives the previous step's output and returns a value for the next step.</figcaption>
+          </figure>
+          <h3>Example: a compact LCEL chain</h3>
+          <pre><code>from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
+
+prompt = ChatPromptTemplate.from_template(
+    "Explain {concept} to a beginner in two sentences."
+)
+model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+chain = prompt | model | StrOutputParser()
+
+answer = chain.invoke({"concept": "vector search"})
+print(answer)</code></pre>
+          <p>The prompt turns a dictionary into messages; the chat model returns an AI message; <code>StrOutputParser</code> extracts its text. The pipe connects those transformations.</p>
+          <h3>Common workflow shapes</h3>
+          <table>
+            <thead><tr><th>Shape</th><th>What it does</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td>Sequential</td><td>Run one step after another</td><td>Translate → summarize → format</td></tr>
+              <tr><td>Parallel</td><td>Run independent branches and collect results</td><td>Generate a title and keywords together</td></tr>
+              <tr><td>Conditional</td><td>Select a path based on input or a result</td><td>Route a support question to billing or delivery</td></tr>
+            </tbody>
+          </table>
+          <div class="callout" style="--callout:#008f87"><strong>Practical tip:</strong> use a deterministic chain when the steps are known. Introduce an agent only when the application genuinely needs model-directed choices or tool use.</div>
+        </section>
+
+        <section id="retrieval">
+          <span class="label orange">Component 04</span>
+          <h2>Indexing, retrieval, and RAG</h2>
+          <p>Models do not automatically know private or newly updated documents. Retrieval-Augmented Generation (RAG) searches an external knowledge source and provides relevant passages as context for a model's answer.</p>
+          <figure class="diagram">
+            <div class="flow" role="img" aria-label="Documents are loaded, split into chunks, embedded, and stored. A query searches the vector store for relevant chunks, which are added to a prompt for the model.">
+              <div class="node" style="--node-color:#d97706">Load docs<small>PDF, web, DB</small></div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#d97706">Split<small>small chunks</small></div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#008f87">Embed<small>vectors</small></div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#008f87">Vector store<small>index</small></div>
+            </div>
+            <div class="flow" style="margin-top:14px" role="img" aria-label="A user question retrieves matching chunks from the index; the chunks and question are sent to the model.">
+              <div class="node" style="--node-color:#3366ee">Question</div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#008f87">Retriever<small>find matches</small></div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#7954d8">Context + prompt</div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#3366ee">Model answer</div>
+            </div>
+            <figcaption>Indexing is usually a preparation step; retrieval happens when a question arrives.</figcaption>
+          </figure>
+          <h3>RAG building blocks</h3>
+          <div class="step"><span class="step-num">1</span><p><strong>Document loader:</strong> reads data and represents it as documents, often with text plus metadata like a source name or page number.</p></div>
+          <div class="step"><span class="step-num">2</span><p><strong>Text splitter:</strong> breaks long content into chunks. Good chunking keeps related ideas together without making chunks too large to retrieve well.</p></div>
+          <div class="step"><span class="step-num">3</span><p><strong>Embedding model:</strong> maps each chunk to a vector. Similar meanings tend to have nearby vectors, though this is not a perfect measure of truth.</p></div>
+          <div class="step"><span class="step-num">4</span><p><strong>Vector store:</strong> stores vectors and associated text/metadata, and supports similarity search. Some systems combine vector and keyword search.</p></div>
+          <div class="step"><span class="step-num">5</span><p><strong>Retriever:</strong> takes a query and returns relevant documents. It may use similarity, filters, reranking, or other search strategies.</p></div>
+          <h3>Example: retrieve context before answering</h3>
+          <pre><code>from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
+
+prompt = ChatPromptTemplate.from_template(
+    "Answer the question using only the context below. "
+    "If the answer is not there, say you do not know.\n\n"
+    "Context:\n{context}\n\nQuestion: {question}"
+)
+model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+
+# Assume `retriever` has already been created and indexed.
+question = "How many days can I return an item?"
+documents = retriever.invoke(question)
+context = "\n\n".join(doc.page_content for doc in documents)
+
+messages = prompt.invoke({"context": context, "question": question})
+answer = model.invoke(messages)
+print(answer.content)</code></pre>
+          <p>This shows the retrieval idea without assuming a specific vector database. The loader, splitter, embedding provider, and vector store setup varies by data source and integration.</p>
+          <div class="callout" style="--callout:#d97706"><strong>RAG is not fine-tuning:</strong> RAG looks up information at question time. Fine-tuning changes model behavior through training. RAG is often the better fit for facts that change or need source citations.</div>
+          <h3>Make RAG answers more dependable</h3>
+          <ul>
+            <li>Keep source metadata and show citations or links when useful.</li>
+            <li>Measure retrieval quality separately from answer quality.</li>
+            <li>Tell the model what to do when retrieved context is insufficient.</li>
+            <li>Protect sensitive documents with access controls before retrieval, not just in the final prompt.</li>
+          </ul>
+        </section>
+
+        <section id="parsers">
+          <span class="label pink">Component 05</span>
+          <h2>Output parsers: turn responses into usable values</h2>
+          <p>Models often return text or message objects. An output parser converts that result into a form your application can use, such as a plain string, a list, or structured data.</p>
+          <div class="cards">
+            <div class="component-card" style="--accent:#cc4887"><h3>String parser</h3><p>Extracts readable text from a model message. Useful for a simple answer or a user-facing summary.</p></div>
+            <div class="component-card" style="--accent:#7954d8"><h3>Structured parser</h3><p>Maps output to fields such as <code>priority</code> and <code>reason</code>. Validate the result before acting on it.</p></div>
+          </div>
+          <h3>Example: request structured data</h3>
+          <pre><code>from pydantic import BaseModel, Field
+from langchain_openai import ChatOpenAI
+
+class StudyCard(BaseModel):
+    question: str = Field(description="A short study question")
+    answer: str = Field(description="A concise answer")
+
+model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+structured_model = model.with_structured_output(StudyCard)
+
+card = structured_model.invoke(
+    "Make a flashcard about what an embedding is."
+)
+print(card.question)
+print(card.answer)</code></pre>
+          <p>Structured-output support depends on the model and provider integration. Treat model output as untrusted input: enforce types, check allowed values, and handle validation or provider errors.</p>
+          <div class="callout" style="--callout:#cc4887"><strong>Important:</strong> a requested JSON shape is not a security boundary. Never execute code, authorize access, or perform a sensitive action just because a model returned a plausible-looking field.</div>
+        </section>
+
+        <section id="state">
+          <span class="label purple">Component 06</span>
+          <h2>Conversation state and memory</h2>
+          <p>A model call is usually stateless: it does not remember a previous call unless your application sends relevant history or retrieves saved information. Conversation state is the data your app carries between turns.</p>
+          <figure class="diagram">
+            <div class="flow" role="img" aria-label="A new user turn joins selected conversation history in a prompt; the model response and updated state are saved for a future turn.">
+              <div class="node" style="--node-color:#3366ee">New turn</div><span class="arrow" aria-hidden="true">+</span>
+              <div class="node" style="--node-color:#7954d8">Selected history</div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#008f87">Prompt + model</div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#cc4887">Reply + updated state</div>
+            </div>
+            <figcaption>Your application chooses what to save, how long to keep it, and what history to send back.</figcaption>
+          </figure>
+          <ul>
+            <li><strong>Short-term conversation context:</strong> recent messages that help answer the current turn.</li>
+            <li><strong>Long-term user/application data:</strong> information stored in a database or knowledge store and retrieved when relevant.</li>
+            <li><strong>Workflow state:</strong> structured progress and decisions in a multi-step process.</li>
+          </ul>
+          <p>Older LangChain examples may use dedicated memory classes. Current applications commonly manage message history explicitly or use LangGraph for stateful, multi-step workflows. Choose persistence deliberately and follow privacy and retention requirements.</p>
+          <div class="callout" style="--callout:#7954d8"><strong>Common misconception:</strong> “memory” does not mean the model permanently learns everything a user has ever said. The application has to store, select, and supply information.</div>
+        </section>
+
+        <section id="tools">
+          <span class="label green">Component 07</span>
+          <h2>Tools and agents: let the app take action</h2>
+          <p>A tool is a function or service an application makes available to a model—for example, a unit converter, a database lookup, or a shipping-status API. An agent uses a model to choose whether and when to call available tools.</p>
+          <figure class="diagram">
+            <div class="flow" role="img" aria-label="The agent sends a request to a tool, receives an observation, and either calls another tool or returns a final answer.">
+              <div class="node" style="--node-color:#3366ee">User request</div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#7954d8">Agent / model</div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#27834b">Tool call</div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#d97706">Result</div><span class="arrow" aria-hidden="true">↺</span>
+              <div class="node" style="--node-color:#3366ee">Answer</div>
+            </div>
+            <figcaption>The model proposes a tool call; your application executes the tool and returns its result.</figcaption>
+          </figure>
+          <h3>Example: define a small tool</h3>
+          <pre><code>from langchain.tools import tool
+
+@tool
+def convert_km_to_miles(kilometers: float) -> float:
+    """Convert a distance in kilometers to miles."""
+    return kilometers * 0.621371</code></pre>
+          <p>A clear name, description, and typed input help the model decide when the tool fits and what arguments to provide. The tool itself should still validate inputs and enforce its own permissions.</p>
+          <h3>Example: make an agent with a tool</h3>
+          <pre><code>from langchain.agents import create_agent
+from langchain_openai import ChatOpenAI
+
+model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+agent = create_agent(
+    model=model,
+    tools=[convert_km_to_miles],
+    system_prompt="Help with distance conversions. Use the conversion tool when needed."
+)
+
+result = agent.invoke({
+    "messages": [{"role": "user", "content": "Convert 10 km to miles."}]
+})</code></pre>
+          <p>Agent APIs and result shapes can vary by LangChain version and integration. Check the documentation for the version installed in your project.</p>
+          <div class="callout" style="--callout:#27834b"><strong>Safety rule:</strong> tools have real capabilities. Apply least privilege, validate arguments, limit expensive operations, and require human confirmation for consequential actions such as purchases or deletion.</div>
+          <h3>Chain or agent?</h3>
+          <table>
+            <thead><tr><th>Choose a chain when…</th><th>Consider an agent when…</th></tr></thead>
+            <tbody>
+              <tr><td>The steps are known in advance and should be repeatable.</td><td>The next step depends on information discovered along the way.</td></tr>
+              <tr><td>You want fewer moving parts and predictable latency.</td><td>The model must select among several appropriate tools.</td></tr>
+              <tr><td>A direct prompt → model → parser flow is enough.</td><td>You can safely bound tool permissions, retries, and execution time.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="app">
+          <span class="label blue">Putting it together</span>
+          <h2>Example project: a handbook Q&amp;A assistant</h2>
+          <p>Imagine a chatbot that answers questions from a company's employee handbook. One sensible design is:</p>
+          <ol>
+            <li><strong>Prepare documents:</strong> load the handbook, split it into useful chunks, embed them, and store them in a vector store.</li>
+            <li><strong>Receive a question:</strong> validate the user's request and check what documents they are allowed to access.</li>
+            <li><strong>Retrieve evidence:</strong> search the index and keep the most relevant chunks with their source metadata.</li>
+            <li><strong>Build a prompt:</strong> include the question and evidence, and instruct the model to say when evidence is missing.</li>
+            <li><strong>Call the model:</strong> generate an answer grounded in the retrieved text.</li>
+            <li><strong>Format and display:</strong> parse the response and include source references so the user can verify it.</li>
+            <li><strong>Evaluate:</strong> test whether retrieval found the right passages and whether the answer used them faithfully.</li>
+          </ol>
+          <figure class="diagram">
+            <div class="flow" role="img" aria-label="Handbook documents are indexed. A question retrieves passages, then a prompt, model, and response with sources produce the answer.">
+              <div class="node" style="--node-color:#d97706">Handbook<small>index once / update</small></div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#008f87">Search index</div><span class="arrow" aria-hidden="true">←</span>
+              <div class="node" style="--node-color:#3366ee">Question</div>
+            </div>
+            <div class="flow" style="margin-top:14px" role="img" aria-label="Retrieved source passages and the question flow into a prompt, model, and cited response.">
+              <div class="node" style="--node-color:#008f87">Passages + sources</div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#7954d8">Prompt</div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#008f87">Model</div><span class="arrow" aria-hidden="true">→</span>
+              <div class="node" style="--node-color:#cc4887">Answer + citations</div>
+            </div>
+            <figcaption>Keep access checks and source permissions in the application; a prompt alone is not an access-control system.</figcaption>
+          </figure>
+        </section>
+
+        <section id="glossary">
+          <span class="label pink">Quick review</span>
+          <h2>Mini glossary</h2>
+          <table>
+            <thead><tr><th>Term</th><th>Plain-English meaning</th></tr></thead>
+            <tbody>
+              <tr><td>LLM</td><td>A large language model that can interpret and generate language.</td></tr>
+              <tr><td>Prompt template</td><td>A reusable instruction with placeholders for runtime values.</td></tr>
+              <tr><td>Runnable / LCEL</td><td>A composable component and syntax for connecting workflow steps.</td></tr>
+              <tr><td>Embedding</td><td>A vector representation of text used for semantic comparison.</td></tr>
+              <tr><td>Vector store</td><td>A system that stores vectors and searches for similar items.</td></tr>
+              <tr><td>Retriever</td><td>A component that finds relevant documents for a query.</td></tr>
+              <tr><td>RAG</td><td>Retrieval-Augmented Generation: retrieve evidence, then generate with it.</td></tr>
+              <tr><td>Tool</td><td>A function or service an application exposes for a model/agent to call.</td></tr>
+              <tr><td>Agent</td><td>A model-guided workflow that can choose actions, often by calling tools.</td></tr>
+              <tr><td>State</td><td>Information your application carries across turns or workflow steps.</td></tr>
+            </tbody>
+          </table>
+          <div class="callout" style="--callout:#3366ee"><strong>Remember:</strong> LangChain APIs evolve. Verify imports, provider integrations, and examples against the documentation for your installed version. Start with a small chain, add retrieval or tools only when needed, and test the full workflow with realistic inputs.</div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer>Self-contained guide — styles and diagrams are embedded; no external assets are required.</footer>
+  <script>
+    const themeToggle = document.querySelector("#theme-toggle");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+    function setTheme(theme) {
+      const isDark = theme === "dark";
+      document.documentElement.dataset.theme = isDark ? "dark" : "light";
+      themeToggle.setAttribute("aria-pressed", String(isDark));
+      themeToggle.textContent = isDark ? "Use light theme" : "Use dark theme";
+    }
+
+    setTheme(prefersDark.matches ? "dark" : "light");
+    themeToggle.addEventListener("click", () => {
+      const isDark = document.documentElement.dataset.theme === "dark";
+      setTheme(isDark ? "light" : "dark");
+    });
+  </script>
+</body>
+</html>
