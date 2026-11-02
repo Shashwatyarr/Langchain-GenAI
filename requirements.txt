@@ -1,0 +1,61 @@
+# LangChain and agent workflows
+langchain
+langchain-core
+langchain-community
+langchain-openai
+langchain-anthropic
+langchain-google-genai
+langchain-groq
+langchain-huggingface
+langgraph
+langgraph-checkpoint-sqlite
+langsmith
+grandalf
+
+# Model providers
+openai
+anthropic
+google-generativeai
+groq
+
+# Hugging Face and data science
+transformers
+huggingface-hub
+datasets
+accelerate
+numpy
+pandas
+scikit-learn
+
+# Vector databases
+chromadb
+qdrant-client
+pinecone
+weaviate-client
+
+# Documents, search, and web tools
+pypdf
+python-docx
+beautifulsoup4
+lxml
+tavily-python
+ddgs
+wikipedia
+mcp
+
+# Apps, APIs, and notebooks
+streamlit
+gradio
+fastapi
+uvicorn
+jupyterlab
+ipykernel
+
+# Evaluation and testing
+ragas
+deepeval
+pytest
+
+# Shared utilities
+python-dotenv
+pydantic

@@ -26,8 +26,9 @@ GenAI/
 │       │   ├── EmbeddedModels/   # Embeddings and similarity examples
 │       │   ├── LLMs/             # Text-generation examples
 │       │   ├── Models.md         # Model concepts and usage notes
-│       │   └── requirements.txt  # Python dependencies for the examples
+│       │   └── requirements.txt  # Original dependencies for the model examples
 │       └── Prompts/              # Prompt templates, message history, and UI
+├── requirements.txt              # GenAI, LangChain, and agent learning dependencies
 └── Notes/                        # Additional LangChain reference notes
 ```
 
@@ -45,24 +46,19 @@ Examples make calls to third-party model providers, which may require an account
 Run these commands in PowerShell from the repository root:
 
 ```powershell
-cd "HandsOn\LangChain Components"
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
-pip install -r "Models\requirements.txt"
+pip install -r requirements.txt
 ```
 
 If PowerShell blocks virtual-environment activation, you can run the environment's Python directly instead:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r "Models\requirements.txt"
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-The prompt UI uses Streamlit, which is not currently listed in `Models\requirements.txt`. Install it in the same virtual environment if you want to run that UI:
-
-```powershell
-pip install streamlit
-```
+The requirements file covers common provider integrations, LangChain/LangGraph, vector stores, document loading, web tools, APIs, notebooks, and evaluation. Hardware-specific local model runtimes (such as PyTorch with a particular CPU/CUDA setup) should be installed separately according to the machine and model you plan to use.
 
 ## Configure provider credentials
 
@@ -107,7 +103,7 @@ Individual examples may use different providers, model IDs, hardware, and creden
 
 - **Authentication or API-key error:** confirm the correct variable name, that the `.env` file is in the documented location, and that the key is active and has access to the selected provider/model.
 - **Unknown or unavailable model:** model IDs and provider availability change over time. Check the provider's current model catalog and update the example's model ID as needed.
-- **Missing Python module:** activate the intended virtual environment and install `Models\requirements.txt`. Install optional packages such as Streamlit separately when needed.
+- **Missing Python module:** activate the root `.venv` and install `requirements.txt`. In VS Code, select `.venv\Scripts\python.exe` as the Python interpreter.
 - **Local model download or memory error:** check available disk space and RAM/VRAM, or try a smaller compatible model.
 - **Streamlit command not found:** verify Streamlit was installed in the active virtual environment and run `python -m streamlit run "Prompts\prompt_ui.py"`.
 

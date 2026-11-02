@@ -66,5 +66,5 @@ Tatti app hai
 """
 
 result = conditional_chain.invoke({"feedback": feedback})
-
 print(result)
+conditional_chain.get_graph().print_ascii()
