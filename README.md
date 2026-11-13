@@ -75,9 +75,11 @@ Some integrations use provider-standard environment variable names or authentica
 
 ## Run an example
 
-From the `HandsOn\LangChain Components` directory, activate the virtual environment you created above and run a script. For example:
+From the repository root, activate the root virtual environment and change to the components directory so `load_dotenv()` can find the `.env` file:
 
 ```powershell
+.\.venv\Scripts\Activate.ps1
+Set-Location "HandsOn\LangChain Components"
 python "Models\LLMs\llm_demo.py"
 python "Models\ChatModels\chatmodel_groq.py"
 python "Models\EmbeddedModels\Embedding_model.py"

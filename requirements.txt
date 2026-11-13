@@ -15,14 +15,12 @@ grandalf
 # Model providers
 openai
 anthropic
-google-generativeai
 groq
 
 # Hugging Face and data science
 transformers
 huggingface-hub
 datasets
-accelerate
 numpy
 pandas
 scikit-learn
@@ -53,7 +51,6 @@ ipykernel
 
 # Evaluation and testing
 ragas
-deepeval
 pytest
 
 # Shared utilities
