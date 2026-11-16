@@ -6,7 +6,7 @@ import os
 load_dotenv()
 
 prompt=PromptTemplate(
-    template='Generate 5 interesting facts about {topic}',
+    template='Generate a 200 lines poem about {topic}',
     input_variables=['topic']
 )
 
